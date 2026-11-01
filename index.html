@@ -68,7 +68,10 @@
     .bar__right { gap: var(--v-2); }
     .bar__mark { font-size: 1.1rem; }
   }
-  @media (max-width: 860px) { .bar.is-scrolled { background: color-mix(in oklab, var(--v-canvas) 96%, transparent); } }
+  /* телефон: шапка всегда сплошная – текст первого экрана не просвечивает сквозь неё при прокрутке и раздутом шрифте */
+  @media (max-width: 860px) { .bar, .bar.is-scrolled { background: var(--v-canvas); box-shadow: 0 1px 0 var(--v-hair); -webkit-backdrop-filter: none; backdrop-filter: none; } }
+  .bar__short { display: none; }
+  @media (max-width: 520px) { .bar__long { display: none; } .bar__short { display: inline; } }
   /* телефон: подписи не мельче 15 px (--v-t-sm на 390 px = 14 px) */
   @media (max-width: 860px) {
     .hero__tel, .hero__note, .rows p, .turn__text, .poka__fig figcaption, .xr__list em, .xr__meter, .step p, .plist .note, .prices__incl,
@@ -110,7 +113,7 @@
       background: linear-gradient(to bottom, var(--v-canvas-85) 0%, var(--v-canvas-85) 50%, var(--v-canvas-60) 80%, transparent 100%); }
     .hero__tel { text-shadow: 0 1px 10px rgb(0 0 0 / .6); }
     .hero__floor { height: 22%; }
-    .v-page .hero__copy { top: 5.2rem; bottom: auto; }
+    .v-page .hero__copy { top: calc(var(--bar-h, 4.5rem) + .75rem); bottom: auto; }
     .hero__copy .v-display { font-size: var(--v-t-2xl); }
     .hero__copy .v-lede { font-size: var(--v-t-base); margin-top: var(--v-4); max-width: none; }
     .hero__label { margin-bottom: var(--v-3); }
@@ -302,7 +305,7 @@
     <a class="bar__mark" href="#top"><i aria-hidden="true"></i>Прямой привоз</a>
     <nav class="bar__right" aria-label="Быстрые ссылки">
       <a class="bar__tel" href="tel:{{телефон}}">{{телефон}}</a>
-      <a class="v-btn" href="{{ссылка-записи}}" rel="noopener">Рассчитать стоимость</a>
+      <a class="v-btn" href="{{ссылка-записи}}" rel="noopener"><span class="bar__long">Рассчитать стоимость</span><span class="bar__short">Расчёт</span></a>
     </nav>
   </header>
 
@@ -343,7 +346,7 @@
     <!-- 2 · ЗНАКОМСТВО: владельцы компании (фото – заглушка, заменить на фото заказчика) -->
     <section class="v-section" data-v-act="flow" data-v-drift="#151a20" id="my" aria-label="Знакомьтесь: владельцы компании">
       <div class="v-wrap lyudi">
-        <figure class="lyudi__fig" data-v-reveal="right" data-v-reveal-at="0.12 0.5">
+        <figure class="lyudi__fig" data-v-in data-v-in-self>
           <img src="assets/owners.webp" srcset="assets/owners-600.webp 600w, assets/owners.webp 1200w" sizes="(max-width: 860px) 100vw, 40vw" alt="Владельцы компании за столом в офисе с видом на бухту" width="1200" height="1600" loading="lazy" decoding="async">
           <figcaption class="lyudi__coord">Офис во Владивостоке · {{адрес}}</figcaption>
         </figure>
@@ -566,6 +569,12 @@
 <script src="vibe.js"></script>
 <script>
   // На телефоне пины короче: data-v-span из CSS не поменять, правим атрибут до монтирования.
+  // Высота шапки в переменную: текст первого экрана на телефоне начинается строго под ней, даже если браузер увеличил шрифт.
+  (function () {
+    var bar = document.querySelector('.bar'), root = document.querySelector('.v-page');
+    function set() { root.style.setProperty('--bar-h', bar.offsetHeight + 'px'); }
+    set(); window.addEventListener('resize', set);
+  })();
   if (window.matchMedia('(max-width: 860px)').matches) {
     document.getElementById('top').setAttribute('data-v-span', '1.7');
     // на телефоне верх кадра – глухая тёмная стена под текст: оффер держим до конца акта, иначе верх экрана пустой
