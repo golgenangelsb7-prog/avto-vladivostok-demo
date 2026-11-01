@@ -106,6 +106,25 @@
   .hero__note { position: absolute; z-index: 3; right: var(--v-gutter); top: clamp(6rem, 13vh, 8rem); text-shadow: 0 1px 10px rgb(0 0 0 / .6); text-align: right; display: grid; gap: .3em; font-size: var(--v-t-sm); color: var(--v-ink); }
   .hero__note .v-nums { font-family: var(--v-font-display); font-weight: 600; font-size: var(--v-t-lg); letter-spacing: -.01em; }
   .hero__top { display: none; }
+  /* компьютер: текст прижат к низу, но сверху упирается в шапку – в низком окне не уходит под неё */
+  @media (min-width: 861px) {
+    .v-page .hero__copy { top: calc(var(--bar-h, 4.5rem) + 1rem); display: flex; flex-direction: column; align-items: flex-start; }
+    /* auto-отступ вместо justify-content: flex-end – при нехватке места лишнее уходит вниз, а не под шапку */
+    .hero__copy > :first-child { margin-top: auto; }
+  }
+  @media (min-width: 861px) and (max-height: 760px) {
+    .v-page .hero__copy { bottom: 2.5rem; }
+    .hero__copy .v-display { font-size: clamp(1.9rem, 6.6svh, 3.4rem); }
+    .hero__copy .v-lede { margin-top: var(--v-3); }
+    .hero__cta { margin-top: var(--v-4); }
+    .hero__label { margin-bottom: var(--v-2); }
+    .demo-for { margin-bottom: var(--v-3); }
+  }
+  @media (min-width: 861px) and (max-height: 600px) {
+    .hero__label, .hero__note span:last-child, .hero__tel { display: none; }
+    .v-page .hero__copy { bottom: 1.5rem; }
+    .hero__copy .v-lede { font-size: var(--v-t-base); }
+  }
   @media (max-width: 860px) {
     .hero__back img { top: 0; height: 112%; }
     #top .v-scrim--lead { display: none; }
